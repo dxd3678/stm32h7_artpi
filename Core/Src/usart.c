@@ -21,7 +21,6 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#include <device/device.h>
 #include <device/tty/tty.h>
 #include <device/tty/stm32_uart.h>
 /* USER CODE END 0 */
@@ -294,5 +293,31 @@ void stm32h7_uart4_init(struct device *dev)
   stm32_uart_device_register(tty);
 }
 
+static struct stm32_uart stm32h7_uart3 = {
+    .tty = {
+        .dev = {
+            .init_name = "stm32-uart",
+            .name = "ttyS3",
+            .init = stm32h7_usart3_init,
+        },
+        .port_num = 3,
+        .mode = TTY_MODE_STREAM,
+    }
+};
+
+static struct stm32_uart stm32h7_uart4 = {
+.tty = {
+    .dev = {
+        .init_name = "stm32-uart",
+        .name = "ttyS4",
+        .init = stm32h7_uart4_init,
+    },
+    .parity = 4,
+    .mode = TTY_MODE_CONSOLE
+    }
+};
+
+register_device(stm32h7_uart3, stm32h7_uart3.tty.dev);
+register_device(stm32h7_uart4, stm32h7_uart4.tty.dev);
 
 /* USER CODE END 1 */

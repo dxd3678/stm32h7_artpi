@@ -1,6 +1,6 @@
 #include <device/spi/spi.h>
 
-struct stm32_spi {
+struct stm32_spi_data {
     struct device_driver drv;
 };
 
@@ -60,7 +60,7 @@ static void stm32_spi_init(struct device_driver *drv)
     driver_register(drv);
 }
 
-static struct stm32_spi stm32_spi_drv = {
+static struct stm32_spi_data stm32_spi_drv = {
     .drv = {
         .name = "stm32-spi-drv",
         .init = stm32_spi_init,

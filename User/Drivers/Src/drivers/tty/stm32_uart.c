@@ -15,17 +15,6 @@
 #include <string.h>
 #include <stdio.h>
 
-struct stm32_uart {
-    struct tty_device tty;
-    uint8_t buf[128];
-    size_t buf_len;
-    bool is_open;
-    struct ring ringbuf;
-    osThreadId_t tid;
-    bool tx_cplt;
-    uint8_t chart;
-};
-
 #define to_stm32_uart(d)  container_of(d, struct stm32_uart, tty)
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
@@ -245,36 +234,5 @@ static struct tty_driver stm32_uart_drv = {
     .probe = stm32_uart_probe,
     .remove = stm32_uart_remove,
 };
-
-extern void stm32h7_usart3_init(struct device *dev);
-extern void stm32h7_uart4_init(struct device *dev);
-
-static struct stm32_uart stm32h7_uart3 = {
-    .tty = {
-        .dev = {
-            .init_name = "stm32-uart",
-            .name = "ttyS3",
-            .init = stm32h7_usart3_init,
-        },
-        .port_num = 3,
-        .mode = TTY_MODE_STREAM,
-    }
-};
-
-static struct stm32_uart stm32h7_uart4 = {
-.tty = {
-    .dev = {
-        .init_name = "stm32-uart",
-        .name = "ttyS4",
-        .init = stm32h7_uart4_init,
-    },
-    .parity = 4,
-    .mode = TTY_MODE_CONSOLE
-    }
-};
-
-register_device(stm32h7_uart3, stm32h7_uart3.tty.dev);
-register_device(stm32h7_uart4, stm32h7_uart4.tty.dev);
-
 
 register_driver(stm32_uart, stm32_uart_drv.drv);

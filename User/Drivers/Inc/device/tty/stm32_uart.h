@@ -10,4 +10,15 @@
 #include <stm32h7xx_hal_uart.h>
 #endif
 
-int stm32_uart_device_register(struct tty_device *tty);
+#include <ring.h>
+
+struct stm32_uart {
+    struct tty_device tty;
+    uint8_t buf[128];
+    size_t buf_len;
+    bool is_open;
+    struct ring ringbuf;
+    void *tid;
+    bool tx_cplt;
+    uint8_t chart;
+};
