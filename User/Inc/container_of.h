@@ -3,6 +3,8 @@
 #include "compiler_types.h"
 #include "common.h"
 
+#include <stddef.h>
+
 #define typeof_member(T, m)	typeof(((T*)0)->m)
 
 /**

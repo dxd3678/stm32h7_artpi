@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <stdio.h>
 
 static struct list_head device_list = LIST_HEAD_INIT(device_list);
 
@@ -42,7 +43,7 @@ static int tty_driver_probe(struct device *dev)
     return drv->probe(tty);
 }
 
-static void tty_driver_remove(struct device *dev)
+static int tty_driver_remove(struct device *dev)
 {
     struct tty_device *tty = to_tty_device(dev);
     struct tty_driver *drv = to_tty_driver(dev->driver);
@@ -123,3 +124,4 @@ struct tty_device *tty_device_lookup_by_name(const char *name)
 
     return NULL;
 }
+

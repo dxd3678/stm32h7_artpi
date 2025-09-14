@@ -33,7 +33,7 @@ int device_register(struct device *dev)
     return 0;
 }
 
-int device_probe(struct driver *drv)
+int device_probe(struct device_driver *drv)
 {
     struct bus_type *bus = drv->bus;
     struct device *dev;
@@ -52,7 +52,7 @@ int device_probe(struct driver *drv)
     return 0;
 }
 
-void __init device_init()
+void device_init()
 {
     volatile struct device **start = __board_device_list_start;
     volatile struct device **end = __board_device_list_end;

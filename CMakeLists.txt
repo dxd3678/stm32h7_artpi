@@ -50,8 +50,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/drivers/base/device.c
     User/Src/drivers/base/driver.c
     User/Src/drivers/tty/tty.c
-    User/Src/drivers/tty/stm32h7_uart.c
+    User/Src/drivers/tty/stm32_uart.c
     User/Src/shell/shell.c
+    User/Src/shell/commands/help_cmd.c
 )
 
 # Add include paths
@@ -63,6 +64,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+    -DSTM32H7
 )
 
 # Remove wrong libob.a library dependency when using cpp files

@@ -18,7 +18,8 @@
         "device.h": "c",
         "list.h": "c",
         "chrono": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "stm32_uart.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

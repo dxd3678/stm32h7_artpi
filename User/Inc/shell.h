@@ -4,6 +4,7 @@ struct shell_command {
     const char *name;
     const char *help_str;
     int (*func)(int argc, char *argv[]);
+    void (*help_fn)(int argc, char *argv[]);
 };
 
 extern const struct shell_command __shell_cmd_list_start[];
@@ -19,9 +20,13 @@ int shell_puts(const char *str);
 int shell_printf(const char *fmt, ...);
 void shell_run(void);
 
-#define shell_command_register(name_str, help_str, cb)  \
+int shell_show_available_cmd();
+int shell_show_cmd_help(const char *name, int argc, char *argv[]);
+
+#define shell_command_register(name_str, help, cb, show_help_fn)  \
 static const struct shell_command name_str##_cmd __attribute__((used, section("shell_cmd_list"))) = { \
     .name = #name_str,  \
-    .help = help_str,   \
-    .func = cb  \
+    .help_str = help,   \
+    .func = cb,  \
+    .help_fn = show_help_fn \
 }

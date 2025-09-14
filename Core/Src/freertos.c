@@ -136,7 +136,7 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Application */
 void StartShellTask(void *argument)
 {
-  shell_init("ttyS4", "stm32h7> ");
+  shell_init("ttyS4", "stm32h7>");
   for (;;)
   {
     shell_run();

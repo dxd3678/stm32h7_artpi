@@ -6,8 +6,9 @@ typedef struct {
 
 
 #define early_initcall(_name, fn)   \
-static initcall_t _name section("early_init_list") = {  \
+static initcall_t _name __attirbute__((used, section("early_init_list"))) = {  \
     .init = fn, \
 }
 
-#define __init section("init_function_list")
+
+

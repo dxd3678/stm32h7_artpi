@@ -128,7 +128,7 @@ static int shell_getchar(void)
 
     ret = tty_read(ctx->tty, &c, 1);
 
-    if (ret <= 0) {
+    if (ret < 0) {
         return -1;
     }
 
@@ -294,7 +294,50 @@ static void main_loop(void)
     }
 }
 
+int shell_show_available_cmd()
+{
+    const struct shell_command *cmd;
+    int i;
+
+    shell_puts("available commands\r\n");
+
+    if (xSemaphoreTake(ctx->lock, portMAX_DELAY)) {
+        for (i = 0; i < SHELL_CMD_COUNT; i++) {
+            cmd = &SHELL_CMD_LIST_START[i];
+            shell_printf("  %s - %s\r\n", cmd->name, cmd->help_str);
+        }
+        xSemaphoreGive(ctx->lock);
+    }
+    return 0;
+}
+
+int shell_show_cmd_help(const char *name, int argc, char *argv[])
+{
+    struct shell_command *cmd = find_command(name);
+    if (cmd) {
+        if (cmd->help_fn)
+            cmd->help_fn(argc, argv);
+    }
+    return 0;
+}
+
 void shell_run(void)
 {
     main_loop();
+}
+
+int _read(int file, char *ptr, int len)
+{
+    (void)file;
+    if (ctx && ctx->tty)
+        return tty_read(ctx->tty, ptr, len);
+    return -ENODEV;
+}
+
+int _write(int file, char *ptr, int len)
+{
+    (void)file;
+    if (ctx && ctx->tty)
+        return tty_write(ctx->tty, ptr, len);
+    return -ENODEV;
 }

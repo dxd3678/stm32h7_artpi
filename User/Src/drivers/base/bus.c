@@ -6,19 +6,16 @@
 
 #include <string.h>
 
-static struct list_head bus_list;
+static struct list_head bus_list = LIST_HEAD_INIT(bus_list);
 
-// struct bus_type virtual_bus_type;
-static void virtual_bus_init(void);
-
-extern struct bus_type __bus_type_list_start[];
-extern struct bus_type __bus_type_list_end[];
+extern struct bus_type *__bus_type_list_start[];
+extern struct bus_type *__bus_type_list_end[];
 
 static int virtual_bus_probe(struct device *dev)
 {
     int ret;
 
-    struct driver *drv = dev->driver;
+    struct device_driver *drv = dev->driver;
 
     ret = drv->probe(dev);
     if (ret)
@@ -28,13 +25,13 @@ static int virtual_bus_probe(struct device *dev)
 
 static int virtual_bus_remove(struct device *dev)
 {
-    struct driver *drv = dev->driver;
+    struct device_driver *drv = dev->driver;
     drv->remove(dev);
     dev->driver = NULL;
     return 0;
 }
 
-static int virtual_bus_match(struct device *dev, struct driver *drv)
+static int virtual_bus_match(struct device *dev, struct device_driver *drv)
 {
     const struct driver_match_table *ptr;
 
@@ -56,33 +53,30 @@ int bus_register(struct bus_type *bus)
     return 0;
 }
 
-
-
-BUS_TYPE(virtual) = {
+static struct bus_type virtual_bus_type = {
     .name = "virtual",
-    .init = virtual_bus_init,
     .probe = virtual_bus_probe,
     .remove = virtual_bus_remove,
     .match = virtual_bus_match,
 };
-
-static void virtual_bus_init(void)
-{
-    INIT_LIST_HEAD(&bus_list);
-    bus_register(&virtual_bus_type);
-}
 
 struct bus_type *get_virtual_bus_type()
 {
     return &virtual_bus_type;
 }
 
-void __init bus_type_init(void)
+void bus_type_init(void)
 {
-    struct bus_type *bus =  __bus_type_list_start;
+    struct bus_type **start = __bus_type_list_start;
+    struct bus_type **end = __bus_type_list_end;
+    int count = ((uint32_t)end - (uint32_t)start) / sizeof(void *);
+    struct bus_type *bus;
+    int i;
 
-    while(bus < __bus_type_list_end) {
-        bus->init();
-        bus++;
+    for (i = 0; i < count; i++) {
+        bus = start[i];
+        bus_register(bus);
     }
 }
+
+register_bus_type(virtual_bus_type);

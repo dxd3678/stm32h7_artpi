@@ -10,7 +10,7 @@
 
 static struct list_head driver_list = LIST_HEAD_INIT(driver_list);
 
-int driver_register(struct driver *drv)
+int driver_register(struct device_driver *drv)
 {
     if (!drv ||
         !drv->probe ||
@@ -32,7 +32,7 @@ int driver_register(struct driver *drv)
 
 int driver_probe(struct device *dev)
 {
-    struct driver *drv;
+    struct device_driver *drv;
     
     list_for_each_entry(drv, &driver_list, list)
     {
@@ -43,13 +43,13 @@ int driver_probe(struct device *dev)
     return -1;
 }
 
-void __init driver_init()
+void driver_init()
 {
     volatile void *start = __device_driver_list_start;
     volatile void *end = __device_driver_list_end;
     volatile int count = (end - start) / sizeof(void *);
     int i;
-    struct driver *drv;
+    struct device_driver *drv;
     
     for (i = 0, drv = __device_driver_list_start[i]; i < count ; drv = __device_driver_list_start[i++])
     {

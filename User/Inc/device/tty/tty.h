@@ -25,14 +25,19 @@ struct tty_device {
     uint8_t flow_control;
     const struct tty_operations *ops;
     struct list_head list;
+    int mode;
+    bool use_dma;
 };
 
 struct tty_driver {
-    struct driver drv;
+    struct device_driver drv;
     int (*probe)(struct tty_device *tty);
-    void (*remove)(struct tty_device *tty);
+    int (*remove)(struct tty_device *tty);
     const struct driver_match_table *match_ptr;
 };
+
+#define TTY_MODE_CONSOLE    1 << 0
+#define TTY_MODE_STREAM     1 << 1
 
 #define to_tty_device(d)    container_of(d, struct tty_device, dev)
 #define to_tty_driver(d)    container_of(d, struct tty_driver, drv)

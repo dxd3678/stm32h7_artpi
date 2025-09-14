@@ -31,7 +31,7 @@ static inline uint32_t ring_size(struct ring *r)
 
 static inline uint32_t ring_enqueue(struct ring *r, uint32_t count)
 {
-    return __atomic_add_fetch(&r->head, count, memory_order_relaxed);
+    return __atomic_fetch_add(&r->head, count, memory_order_relaxed);
 }
 
 static inline uint32_t ring_dequeue(struct ring *r, uint32_t count)
