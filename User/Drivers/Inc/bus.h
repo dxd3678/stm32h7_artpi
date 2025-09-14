@@ -13,7 +13,7 @@ struct bus_type {
     struct list_head list;
 };
 
-struct bus_type *get_virtual_bus_type();
+extern struct bus_type virtual_bus_type;
 
 #define register_bus_type(_bus) \
 static struct bus_type __attribute__((used, section("bus_type_list"))) *_##_bus = &_bus

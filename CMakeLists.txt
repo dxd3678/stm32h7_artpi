@@ -45,21 +45,24 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    User/Src/drivers/base/bus.c
-    User/Src/kernel/kernel.c
-    User/Src/drivers/base/device.c
-    User/Src/drivers/base/driver.c
-    User/Src/drivers/tty/tty.c
-    User/Src/drivers/tty/stm32_uart.c
-    User/Src/drivers/spi/spi.c
-    User/Src/shell/shell.c
-    User/Src/shell/commands/help_cmd.c
+    User/Drivers/Src/drivers/base/bus.c
+    User/Drivers/Src/drivers/base/device.c
+    User/Drivers/Src/drivers/base/driver.c
+    User/Drivers/Src/drivers/i2c/i2c.c
+    User/Drivers/Src/drivers/spi/spi.c
+    User/Drivers/Src/drivers/spi/stm32_spi.c
+    User/Drivers/Src/drivers/tty/tty.c
+    User/Drivers/Src/drivers/tty/stm32_uart.c
+    User/Drivers/Src/kernel/kernel.c
+    User/App/shell/shell.c
+    User/App/shell/commands/help_cmd.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    ${CMAKE_CURRENT_SOURCE_DIR}/User/Inc
+    User/Drivers/Inc
+    User/App/Inc
 )
 
 # Add project symbols (macros)

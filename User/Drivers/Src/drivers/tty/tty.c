@@ -17,7 +17,7 @@ int tty_device_register(struct tty_device *tty)
     if (!tty)
         return -EINVAL;
 
-    tty->dev.bus = get_virtual_bus_type();
+    tty->dev.bus = &virtual_bus_type;
 
     ret = device_register(&tty->dev);
     if (ret)
@@ -57,7 +57,7 @@ int tty_driver_register(struct tty_driver *tty_drv)
         !tty_drv->probe || !tty_drv->remove)
     return -EINVAL;
 
-    tty_drv->drv.bus = get_virtual_bus_type();
+    tty_drv->drv.bus = &virtual_bus_type;
     tty_drv->drv.probe = tty_driver_probe;
     tty_drv->drv.remove = tty_driver_remove;
 

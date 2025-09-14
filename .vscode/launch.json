@@ -7,12 +7,16 @@
         {
             "cwd": "${workspaceFolder}",
             "executable": "./build/Debug/artpi.elf",
-            "name": "Debug with ST-Util",
+            "name": "Debug with ST-Link",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none",
-            "servertype": "stutil"
+            "servertype": "stlink",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
         },
     ]
 }

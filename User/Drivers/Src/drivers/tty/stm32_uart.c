@@ -21,7 +21,6 @@ struct stm32_uart {
     size_t buf_len;
     bool is_open;
     struct ring ringbuf;
-    SemaphoreHandle_t lock;
     osThreadId_t tid;
     bool tx_cplt;
     uint8_t chart;
@@ -70,7 +69,6 @@ static void uart_task(void *args)
                     ring_enqueue(r, 1);
             }
         }
-        taskYIELD();
     }
 }
 
@@ -81,10 +79,7 @@ static int stm32_uart_open(struct device *dev)
     struct ring *r = &uart->ringbuf;
     int ret = 0;
 
-    xSemaphoreTake(uart->lock, portMAX_DELAY);
-
     if (uart->is_open) {
-        xSemaphoreGive(uart->lock);
         return -EBUSY;
     }
 
@@ -103,8 +98,6 @@ static int stm32_uart_open(struct device *dev)
         uart->tid = osThreadNew(uart_task, uart, &uartTask_attrbutes);
     }
 
-    xSemaphoreGive(uart->lock);
-
     return ret;
 }
 
@@ -112,13 +105,10 @@ static int stm32_uart_close(struct device *dev)
 {
     struct stm32_uart *uart =(struct stm32_uart *) to_tty_device(dev);
     UART_HandleTypeDef *handle = uart->tty.dev.private_data;
-    xSemaphoreTake(uart->lock, portMAX_DELAY);
 
     if (!uart->is_open) {
-        xSemaphoreGive(uart->lock);
         return 0;
     }
-
 
     uart->is_open = false;
 
@@ -126,8 +116,6 @@ static int stm32_uart_close(struct device *dev)
         HAL_UART_Abort(handle);
         HAL_UART_AbortReceive(handle);
     }
-
-    xSemaphoreGive(uart->lock);
 
     return 0;
 }
@@ -210,11 +198,6 @@ static int stm32_uart_probe(struct tty_device *tty)
 
     tty->ops = &stm32_uart_ops;
 
-    uart->lock = xSemaphoreCreateMutex();
-
-    if (!uart->lock)
-        return -ENOMEM;
-
     uart->is_open = false;
 
     uart->buf_len = sizeof(uart->buf);
@@ -224,9 +207,7 @@ static int stm32_uart_probe(struct tty_device *tty)
 
 static int stm32_uart_remove(struct tty_device *tty)
 {
-    struct stm32_uart *uart = (struct stm32_uart *)tty;
-
-    vSemaphoreDelete(uart->lock);
+    // struct stm32_uart *uart = (struct stm32_uart *)tty;
     tty->ops = NULL;
     return 0;
 }
@@ -264,5 +245,36 @@ static struct tty_driver stm32_uart_drv = {
     .probe = stm32_uart_probe,
     .remove = stm32_uart_remove,
 };
+
+extern void stm32h7_usart3_init(struct device *dev);
+extern void stm32h7_uart4_init(struct device *dev);
+
+static struct stm32_uart stm32h7_uart3 = {
+    .tty = {
+        .dev = {
+            .init_name = "stm32-uart",
+            .name = "ttyS3",
+            .init = stm32h7_usart3_init,
+        },
+        .port_num = 3,
+        .mode = TTY_MODE_STREAM,
+    }
+};
+
+static struct stm32_uart stm32h7_uart4 = {
+.tty = {
+    .dev = {
+        .init_name = "stm32-uart",
+        .name = "ttyS4",
+        .init = stm32h7_uart4_init,
+    },
+    .parity = 4,
+    .mode = TTY_MODE_CONSOLE
+    }
+};
+
+register_device(stm32h7_uart3, stm32h7_uart3.tty.dev);
+register_device(stm32h7_uart4, stm32h7_uart4.tty.dev);
+
 
 register_driver(stm32_uart, stm32_uart_drv.drv);

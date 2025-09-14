@@ -294,27 +294,5 @@ void stm32h7_uart4_init(struct device *dev)
   stm32_uart_device_register(tty);
 }
 
-static struct tty_device stm32h7_uart3 = {
-  .dev = {
-    .init_name = "stm32-uart",
-    .name = "ttyS3",
-    .init = stm32h7_usart3_init,
-  },
-  .port_num = 3,
-  .mode = TTY_MODE_STREAM,
-};
-
-static struct tty_device stm32h7_uart4 = {
-  .dev = {
-    .init_name = "stm32-uart",
-    .name = "ttyS4",
-    .init = stm32h7_uart4_init,
-  },
-  .parity = 4,
-  .mode = TTY_MODE_CONSOLE
-};
-
-register_device(stm32h7_uart3, stm32h7_uart3.dev);
-register_device(stm32h7_uart4, stm32h7_uart4.dev);
 
 /* USER CODE END 1 */

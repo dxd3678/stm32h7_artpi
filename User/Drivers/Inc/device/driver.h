@@ -16,7 +16,6 @@ struct driver_match_table {
 struct device_driver {
     const char *name;
     struct list_head list;
-    struct list_head device_list;
     int (*probe)(struct device *dev);
     int (*remove)(struct device *dev);
     size_t private_data_size;

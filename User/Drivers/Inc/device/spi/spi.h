@@ -44,10 +44,10 @@ struct spi_master {
         bool slave;
         bool target;
     };
-    size_t (*max_transfer_size)(struct spi_device *dev);
-    size_t (*max_message_size)(struct spi_device *dev);
-    int (*setup)(struct spi_device *dev);
-    int (*transfer)(struct spi_device *dev, struct spi_message *msg);
+    size_t (*max_transfer_size)(struct spi_device *spi);
+    size_t (*max_message_size)(struct spi_device *spi);
+    int (*setup)(struct spi_device *spi);
+    int (*transfer)(struct spi_device *spi, struct spi_message *msg);
     uint32_t mode;
 }; 
 
@@ -71,6 +71,8 @@ struct spi_driver {
     int (*probe)(struct spi_device *spi);
     int (*remove)(struct spi_device *spi);
 };
+
+extern struct bus_type spi_bus_type;
 
 #define to_spi_master(d)    container_of(d, struct spi_master, dev)
 

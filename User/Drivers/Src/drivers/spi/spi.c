@@ -4,7 +4,6 @@
 #include <errno.h>
 
 static struct list_head spi_master_list = LIST_HEAD_INIT(spi_master_list);
-static struct bus_type spi_bus_type;
 
 static int spi_probe(struct device *dev)
 {
@@ -35,7 +34,7 @@ static int spi_match(struct device *dev, struct device_driver *drv)
     return 0;
 }
 
-static struct bus_type spi_bus_type = {
+struct bus_type spi_bus_type = {
     .name = "spi",
     .probe = spi_probe,
     .remove = spi_remove,
@@ -84,6 +83,8 @@ int spi_driver_register(struct spi_driver *drv)
 
     if (!drv || !drv->probe || !drv->remove)
         return -EINVAL;
+
+    drv->driver.bus = &spi_bus_type;
 
     drv->driver.probe = spi_probe;
     drv->driver.remove = spi_remove;

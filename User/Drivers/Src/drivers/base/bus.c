@@ -12,8 +12,6 @@ static struct list_head bus_list = LIST_HEAD_INIT(bus_list);
 extern struct bus_type *__bus_type_list_start[];
 extern struct bus_type *__bus_type_list_end[];
 
-static struct bus_type virtual_bus_type;
-
 static int virtual_bus_probe(struct device *dev)
 {
     int ret;
@@ -59,7 +57,7 @@ int bus_register(struct bus_type *bus)
     return 0;
 }
 
-static struct bus_type virtual_bus_type = {
+struct bus_type virtual_bus_type = {
     .name = "virtual",
     .probe = virtual_bus_probe,
     .remove = virtual_bus_remove,
