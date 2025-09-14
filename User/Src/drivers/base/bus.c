@@ -5,11 +5,14 @@
 #include <device/driver.h>
 
 #include <string.h>
+#include <errno.h>
 
 static struct list_head bus_list = LIST_HEAD_INIT(bus_list);
 
 extern struct bus_type *__bus_type_list_start[];
 extern struct bus_type *__bus_type_list_end[];
+
+static struct bus_type virtual_bus_type;
 
 static int virtual_bus_probe(struct device *dev)
 {
@@ -35,7 +38,7 @@ static int virtual_bus_match(struct device *dev, struct device_driver *drv)
 {
     const struct driver_match_table *ptr;
 
-    if (dev->bus != drv->bus)
+    if (&virtual_bus_type != dev->bus ||&virtual_bus_type != drv->bus)
         return 0;
 
     for (ptr = drv->match_ptr; ptr && ptr->compatible; ptr++) {
@@ -49,6 +52,9 @@ static int virtual_bus_match(struct device *dev, struct device_driver *drv)
 
 int bus_register(struct bus_type *bus)
 {
+    if (!bus || !bus->match || !bus->probe || !bus->remove)
+        return -EINVAL;
+
     list_add_tail(&bus->list, &bus_list);
     return 0;
 }

@@ -215,6 +215,8 @@ static int stm32_uart_probe(struct tty_device *tty)
     if (!uart->lock)
         return -ENOMEM;
 
+    uart->is_open = false;
+
     uart->buf_len = sizeof(uart->buf);
 
     return 0;

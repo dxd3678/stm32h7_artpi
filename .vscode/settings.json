@@ -19,7 +19,9 @@
         "list.h": "c",
         "chrono": "c",
         "cstdint": "c",
-        "stm32_uart.h": "c"
+        "stm32_uart.h": "c",
+        "spi.h": "c",
+        "bus.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

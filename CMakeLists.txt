@@ -51,6 +51,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Src/drivers/base/driver.c
     User/Src/drivers/tty/tty.c
     User/Src/drivers/tty/stm32_uart.c
+    User/Src/drivers/spi/spi.c
     User/Src/shell/shell.c
     User/Src/shell/commands/help_cmd.c
 )

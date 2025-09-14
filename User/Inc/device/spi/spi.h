@@ -1,6 +1,7 @@
 #pragma once
 
 #include <device/device.h>
+#include <device/driver.h>
 
 #include "../../list.h"
 
@@ -39,19 +40,15 @@ struct spi_master {
     struct list_head list;
     int16_t bus_num;
     uint16_t num_chipselect;
-    uint16_t dma_align;
-    uint32_t mode_bits;
-    uint32_t max_speed;
-    uint32_t min_speed;
-    uint16_t flags;
     union {
-        bool savle;
+        bool slave;
         bool target;
     };
     size_t (*max_transfer_size)(struct spi_device *dev);
     size_t (*max_message_size)(struct spi_device *dev);
     int (*setup)(struct spi_device *dev);
     int (*transfer)(struct spi_device *dev, struct spi_message *msg);
+    uint32_t mode;
 }; 
 
 
@@ -62,6 +59,20 @@ struct spi_transfer {
     struct list_head transfer_list;
     uint32_t speed;
 };
+
+struct spi_device_id {
+    char name[32];
+    uint32_t data;
+};
+
+struct spi_driver {
+    const struct spi_device_id *id_table;
+    struct device_driver driver;
+    int (*probe)(struct spi_device *spi);
+    int (*remove)(struct spi_device *spi);
+};
+
+#define to_spi_master(d)    container_of(d, struct spi_master, dev)
 
 static inline void spi_message_init(struct spi_message *m)
 {
@@ -93,3 +104,5 @@ static inline int spi_sync_message(struct spi_device *spi, struct spi_transfer *
     return spi_sync(spi, &m);
 }
 
+int spi_master_register(struct spi_master *master);
+int spi_device_register(struct spi_device *spi);
