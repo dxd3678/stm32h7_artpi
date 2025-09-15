@@ -474,7 +474,7 @@ static int stm32_gpio_adapter_probe(struct device *dev)
 
     adap->algo = &stm32_gpio_algo;
     
-    return 0;
+    return i2c_add_addapter(adap);
 }
 
 static int stm32_gpio_adapter_remove(struct device *dev)

@@ -11,12 +11,12 @@ static struct list_head driver_list = LIST_HEAD_INIT(driver_list);
 
 static uint8_t next_adapter_nr = 0;
 
-static int i2c_device_probe(struct device *dev)
+static int i2c_adapter_probe(struct device *dev)
 {
     return dev->driver->probe(dev);
 }
 
-static int i2c_device_remove(struct device *dev)
+static int i2c_adapter_remove(struct device *dev)
 {
     return dev->driver->remove(dev);
 }
@@ -32,13 +32,20 @@ static int i2c_device_match(struct device *dev, struct device_driver *drv)
         }
     }
 
+    if (dev->init_name && drv->name) {
+        if (strcmp(dev->init_name, drv->name) == 0) {
+            dev->driver = drv;
+            return 1;
+        }
+    }
+
     return 0;
 }
 
 struct bus_type i2c_bus_type = {
     .name = "i2c",
-    .probe = i2c_device_probe,
-    .remove = i2c_device_remove,
+    .probe = i2c_adapter_probe,
+    .remove = i2c_adapter_remove,
     .match = i2c_device_match,
 };
 
@@ -66,6 +73,26 @@ int i2c_register_adapter(struct i2c_adapter *adap)
 
     list_add_tail(&adap->list, &adapter_list);
 
+    return 0;
+}
+
+static int i2c_device_probe(struct device *dev)
+{
+    struct i2c_client *client = to_i2c_device(dev);
+    struct i2c_driver *drv = to_i2c_driver(dev->driver);
+    const struct i2c_device_id *id;
+
+    for (id = drv->match_table; id; id++) {
+        if (strcmp(client->name, id->name) == 0) {
+            client->drv = drv;
+            return drv->probe(client, id);
+        }
+    }
+    return -1;
+}
+
+static int i2c_device_remove(struct device *dev)
+{
     return 0;
 }
 
