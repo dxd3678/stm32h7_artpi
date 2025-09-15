@@ -190,8 +190,8 @@ struct shell_command *find_command(const char *name)
 
 int execute_command(const char *cmd_str)
 {
-    char cmd_copy[SHELL_BUF_SIZE];
-    char *argv[16];
+    char cmd_copy[SHELL_BUF_SIZE] = {0};
+    char *argv[16] = {0};
     int argc;
     struct shell_command *cmd;
 

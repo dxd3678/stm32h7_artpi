@@ -2,14 +2,20 @@
 #include <device/driver.h>
 #include <device/i2c/i2c.h>
 
+
+#include <shell.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <getopt.h>
+#include <stdlib.h>
 
 static struct list_head adapter_list = LIST_HEAD_INIT(adapter_list);
 static struct list_head driver_list = LIST_HEAD_INIT(driver_list);
 
 static uint8_t next_adapter_nr = 0;
+static int8_t current_adapter = -1;
 
 static int i2c_adapter_probe(struct device *dev)
 {
@@ -135,5 +141,91 @@ int i2c_register_device(struct i2c_client *client)
 
     return device_register(&client->dev);
 }
+
+static struct option i2c_optins[] = {
+    {"scan", no_argument, 0, 0},
+    {"dev", required_argument, 0, 0},
+    {"read", required_argument, 0, 'r'},
+    {"write", required_argument, 0, 'w'},
+    {0, 0, 0, 0}
+};
+
+const char *help_str[] = {
+    "scan device",
+    "set adapter",
+    "addr reg count",
+    "addr reg value len"
+};
+
+static int show_help()
+{
+    int i;
+    shell_puts("i2c utils\r\n");
+
+    for (i = 0; i < ARRAY_SIZE(i2c_optins) -1 ; i++) {
+        shell_printf("\t--%s\t- %s\r\n", i2c_optins[i].name, help_str[i]);
+    }
+
+    return 0;
+}
+
+static int do_scan(int8_t dev_id)
+{
+    return 0;
+}
+
+static int do_i2c(int argc, char *argv[])
+{
+    int c;
+    int opt_ind;
+    unsigned long val;
+
+    if (argc < 2) {
+        return show_help();
+    }
+
+    while((c = getopt_long(argc, argv, "r:w:", i2c_optins, &opt_ind)) != -1) {
+        switch(c) {
+            case 0:
+                switch(opt_ind) {
+                    case 0:
+                        if (current_adapter >= 0) {
+                            return do_scan(current_adapter);
+                        } else {
+                            shell_puts("adapter Not Set\r\n");
+                        }
+                        break;
+                    case 1:
+                        val = strtoul(optarg, NULL, 0);
+                        if ((errno && errno == ERANGE) || val > next_adapter_nr) {
+                            shell_printf("Invalid controller id %s\r\n", optarg);
+                            return 0;
+                        }
+
+                        shell_printf("Current adapter %d\r\n", val);
+
+                        current_adapter = val & 0xff;
+
+                        break;
+                }
+                break;
+            case 'r':
+                break;
+            case 'w':
+                break;
+            default:
+                break;
+        }
+    }
+
+    return 0;
+}
+
+static void i2c_cmd_help(int argc, char *argv[])
+{
+
+}
+
+shell_command_register(i2c, "i2c utils", do_i2c, i2c_cmd_help);
 
 register_bus_type(i2c_bus_type);

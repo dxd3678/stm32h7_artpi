@@ -59,6 +59,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/App/shell/shell.c
     User/App/shell/commands/help_cmd.c
     User/board.c
+    User/Lib/Src/getopt.c
 )
 
 # Add include paths
@@ -66,6 +67,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     User/Drivers/Inc
     User/App/Inc
+    User/Lib/Inc
 )
 
 # Add project symbols (macros)
