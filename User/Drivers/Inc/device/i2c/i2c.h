@@ -80,6 +80,8 @@ struct i2c_driver {
 int i2c_add_addapter(struct i2c_adapter *adap);
 int i2c_register_adapter(struct i2c_adapter *adap);
 
+int i2c_transfer(struct i2c_adapter *adap, struct i2c_message *msg, unsigned int count);
+
 #define to_i2c_adapter(d)   container_of(d, struct i2c_adapter, dev)
 #define to_i2c_driver(d)    container_of(d, struct i2c_driver, drv)
 

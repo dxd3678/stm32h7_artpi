@@ -92,6 +92,11 @@ int i2c_register_driver(struct i2c_driver *drv)
     return 0;
 }
 
+int i2c_transfer(struct i2c_adapter *adap, struct i2c_message *msg, unsigned int count)
+{
+    return adap->algo->master_xfer(adap, msg, count);
+}
+
 int i2c_register_device(struct i2c_client *client)
 {
     if (!client || 
