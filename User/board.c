@@ -6,9 +6,12 @@
 
 #include <device/device.h>
 #include <device/tty/stm32_uart.h>
+#include <device/i2c/i2c.h>
+#include <device/i2c/gpio-i2c.h>
 
-void
-StartShellTask (void *argument)
+#include <gpio.h>
+
+void StartShellTask (void *argument)
 {
   shell_init ("ttyS4", "stm32h7>");
   for (;;)
@@ -24,8 +27,7 @@ const osThreadAttr_t shellTask_attrbutes = {
   .priority = (osPriority_t)osPriorityNormal1,
 };
 
-void
-stm32h7_usart3_init (struct device *dev)
+void stm32h7_usart3_init (struct device *dev)
 {
   struct tty_device *tty = to_tty_device (dev);
   MX_USART3_UART_Init ();
@@ -38,8 +40,7 @@ stm32h7_usart3_init (struct device *dev)
   tty_device_register (tty);
 }
 
-void
-stm32h7_uart4_init (struct device *dev)
+void stm32h7_uart4_init (struct device *dev)
 {
   struct tty_device *tty = to_tty_device (dev);
   MX_UART4_Init ();
@@ -49,6 +50,20 @@ stm32h7_uart4_init (struct device *dev)
   tty->stop_bits = huart4.Init.StopBits;
   dev->private_data = &huart4;
   tty_device_register (tty);
+}
+
+static void stm32_gpio_i2c_preinit(struct device *dev)
+{
+    struct i2c_adapter *adap = to_i2c_adapter(dev);
+    static struct gpio_i2c_data data = {
+        .port = GPIOH,
+        .sda_pin = GPIO_PIN_12,
+        .scl_pin = GPIO_PIN_11,
+    };
+
+    dev_set_drvdata(dev, &data);
+
+    i2c_add_addapter(adap);
 }
 
 static struct stm32_uart stm32h7_uart3 = {
@@ -75,5 +90,13 @@ static struct stm32_uart stm32h7_uart4 = {
     }
 };
 
-register_device (stm32h7_uart3, stm32h7_uart3.tty.dev);
-register_device (stm32h7_uart4, stm32h7_uart4.tty.dev);
+static struct i2c_adapter stm32_gpio_i2c = {
+    .dev = {
+        .init_name = "stm32-gpio-i2c",
+        .init = stm32_gpio_i2c_preinit,
+    }
+};
+
+register_device(stm32_gpio_i2c, stm32_gpio_i2c.dev);
+register_device(stm32h7_uart3, stm32h7_uart3.tty.dev);
+register_device(stm32h7_uart4, stm32h7_uart4.tty.dev);

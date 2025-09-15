@@ -49,6 +49,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Drivers/Src/drivers/base/device.c
     User/Drivers/Src/drivers/base/driver.c
     User/Drivers/Src/drivers/i2c/i2c.c
+    User/Drivers/Src/drivers/i2c/stm32-gpio-i2c.c
     User/Drivers/Src/drivers/spi/spi.c
     User/Drivers/Src/drivers/spi/stm32_spi.c
     User/Drivers/Src/drivers/tty/tty.c

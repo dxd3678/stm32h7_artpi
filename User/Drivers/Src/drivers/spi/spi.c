@@ -17,7 +17,7 @@ static int spi_remove(struct device *dev)
 
 static int spi_match(struct device *dev, struct device_driver *drv)
 {
-    const struct driver_match_table *ptr;
+    const struct device_match_table *ptr;
 
     if (&spi_bus_type != dev->bus || &spi_bus_type != drv->bus)
         return 0;

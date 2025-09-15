@@ -34,7 +34,7 @@ static int virtual_bus_remove(struct device *dev)
 
 static int virtual_bus_match(struct device *dev, struct device_driver *drv)
 {
-    const struct driver_match_table *ptr;
+    const struct device_match_table *ptr;
 
     if (&virtual_bus_type != dev->bus ||&virtual_bus_type != drv->bus)
         return 0;

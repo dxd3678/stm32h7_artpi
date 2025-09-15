@@ -10,14 +10,22 @@
 #define I2C_M_TEN       0x0010
 #define I2C_M_RECV_LEN  0x0100
 #define I2C_M_PROBE     0x1000
+#define I2C_M_NOSTART   0x2000
 
 #define I2C_FUNC_I2C                    0x00000001
 #define I2C_FUNC_10BIT_ADDR             0x00000002
 #define I2C_FUNC_PROTOCOL_MANGLING      0x00000004
 
+#define SMBUS_QUICK           0
+#define SMBUS_BYTE            1
+#define SMBUS_BYTE_DATA       2
+#define SMBUS_WORD_DATA       3
+#define SMBUS_BLOCK_DATA      4
+
 struct i2c_adapter;
 struct i2c_driver;
 
+extern struct bus_type i2c_bus_type;
 struct i2c_client {
     struct device dev;
     struct i2c_driver *drv;
@@ -66,6 +74,7 @@ struct i2c_driver {
     int (*probe)(struct i2c_client *client, const struct i2c_device_id *id);
     int (*remove)(struct i2c_client *client);
     int (*probe_new)(struct i2c_client *client);
+    const struct i2c_device_id *match_table;
 };
 
 int i2c_add_addapter(struct i2c_adapter *adap);

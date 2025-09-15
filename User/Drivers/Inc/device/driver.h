@@ -8,7 +8,7 @@
 struct device;
 struct bus_type;
 
-struct driver_match_table {
+struct device_match_table {
     const char *compatible;
     uint32_t data;
 };
@@ -21,7 +21,7 @@ struct device_driver {
     size_t private_data_size;
     void *private_data;
     bool private_data_auto_alloc;
-    const struct driver_match_table *match_ptr;
+    const struct device_match_table *match_ptr;
     struct bus_type *bus;
     void (*init)(struct device_driver *);
 };

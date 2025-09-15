@@ -33,7 +33,7 @@ struct tty_driver {
     struct device_driver drv;
     int (*probe)(struct tty_device *tty);
     int (*remove)(struct tty_device *tty);
-    const struct driver_match_table *match_ptr;
+    const struct device_match_table *match_ptr;
 };
 
 #define TTY_MODE_CONSOLE    1 << 0

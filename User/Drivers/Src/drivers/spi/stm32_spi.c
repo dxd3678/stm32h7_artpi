@@ -46,7 +46,7 @@ static int stm32_spi_remove(struct device *dev)
     return 0;
 }
 
-static const struct driver_match_table stm32_spi_ids[] = {
+static const struct device_match_table stm32_spi_ids[] = {
     {
         .compatible = "stm32-spi-controller"
     },

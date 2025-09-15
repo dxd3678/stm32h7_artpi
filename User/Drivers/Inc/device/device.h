@@ -17,6 +17,16 @@ struct device {
     void (*init)(struct device *);
 };
 
+static inline void dev_set_drvdata(struct device *dev, void *data)
+{
+    dev->private_data = data;
+}
+
+static inline void* dev_get_drvdata(struct device *dev)
+{
+    return dev->private_data;
+}
+
 extern struct device *__board_device_list_start[];
 extern struct device *__board_device_list_end[];
 

@@ -40,11 +40,12 @@ int device_probe(struct device_driver *drv)
 
     list_for_each_entry(dev, &device_list, list)
     {
-        if (dev->bus == bus) {
-            if (bus->match(dev, drv)) {
-                dev->driver = drv;
-                if (bus->probe(dev)) {
-                    dev->driver = NULL;
+        if (!dev->driver) {
+            if (dev->bus == bus) {
+                if (bus->match(dev, drv)) {
+                    if (bus->probe(dev)) {
+                        dev->driver = NULL;
+                    }
                 }
             }
         }
@@ -54,9 +55,9 @@ int device_probe(struct device_driver *drv)
 
 void device_init()
 {
-    volatile struct device **start = __board_device_list_start;
-    volatile struct device **end = __board_device_list_end;
-    volatile int count = ((uint32_t)end - (uint32_t)start) / (sizeof(void *));
+    struct device **start = __board_device_list_start;
+    struct device **end = __board_device_list_end;
+    int count = ((uint32_t)end - (uint32_t)start) / (sizeof(void *));
     int i;
     struct device *dev;
 

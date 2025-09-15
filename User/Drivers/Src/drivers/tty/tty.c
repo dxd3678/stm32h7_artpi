@@ -32,7 +32,7 @@ static int tty_driver_probe(struct device *dev)
 {
     struct tty_device *tty = to_tty_device(dev);
     struct tty_driver *drv = to_tty_driver(dev->driver);
-    const struct driver_match_table *ptr;
+    const struct device_match_table *ptr;
 
     for (ptr = drv->match_ptr; ptr && ptr->compatible; ptr++) {
         if (strcmp(ptr->compatible, tty->dev.name) == 0) {

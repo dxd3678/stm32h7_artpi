@@ -201,7 +201,7 @@ static int stm32_uart_remove(struct tty_device *tty)
     return 0;
 }
 
-static const struct driver_match_table stm32_uart_ids[] = {
+static const struct device_match_table stm32_uart_ids[] = {
     {
         .compatible = "stm32-uart"
     },
