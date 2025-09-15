@@ -11,6 +11,7 @@
 #endif
 
 #include <ring.h>
+#include <device/tty/tty.h>
 
 struct stm32_uart {
     struct tty_device tty;

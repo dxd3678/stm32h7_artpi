@@ -56,6 +56,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     User/Drivers/Src/kernel/kernel.c
     User/App/shell/shell.c
     User/App/shell/commands/help_cmd.c
+    User/board.c
 )
 
 # Add include paths

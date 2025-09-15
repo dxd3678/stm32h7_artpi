@@ -25,8 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <bus.h>
-#include <shell.h>
+#include <board.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,14 +57,6 @@ const osThreadAttr_t defaultTask_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-osThreadId_t shellTaskHandle;
-const osThreadAttr_t shellTask_attrbutes = {
-  .name = "shellTask",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t)osPriorityNormal1,
-};
-
-void StartShellTask(void *argument);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -134,13 +125,6 @@ void StartDefaultTask(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
-void StartShellTask(void *argument)
-{
-  shell_init("ttyS4", "stm32h7>");
-  for (;;)
-  {
-    shell_run();
-  }
-}
+
 /* USER CODE END Application */
 

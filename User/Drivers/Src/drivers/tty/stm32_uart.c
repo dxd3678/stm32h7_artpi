@@ -210,16 +210,6 @@ static const struct driver_match_table stm32_uart_ids[] = {
     }
 };
 
-int stm32_uart_device_register(struct tty_device *tty)
-{
-    struct stm32_uart *uart = to_stm32_uart(tty);
-
-    if (!uart)
-        return -ENOMEM;
-
-    return tty_device_register(&uart->tty);
-}
-
 static void tty_driver_init(struct device_driver *drv)
 {
     tty_driver_register(to_tty_driver(drv));
