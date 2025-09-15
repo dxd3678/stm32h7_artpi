@@ -142,7 +142,7 @@ int i2c_register_device(struct i2c_client *client)
     return device_register(&client->dev);
 }
 
-static struct option i2c_optins[] = {
+static struct option i2c_options[] = {
     {"scan", no_argument, 0, 0},
     {"dev", required_argument, 0, 0},
     {"read", required_argument, 0, 'r'},
@@ -162,8 +162,8 @@ static int show_help()
     int i;
     shell_puts("i2c utils\r\n");
 
-    for (i = 0; i < ARRAY_SIZE(i2c_optins) -1 ; i++) {
-        shell_printf("\t--%s\t- %s\r\n", i2c_optins[i].name, help_str[i]);
+    for (i = 0; i < ARRAY_SIZE(i2c_options) -1 ; i++) {
+        shell_printf("\t--%s\t- %s\r\n", i2c_options[i].name, help_str[i]);
     }
 
     return 0;
@@ -184,7 +184,7 @@ static int do_i2c(int argc, char *argv[])
         return show_help();
     }
 
-    while((c = getopt_long(argc, argv, "r:w:", i2c_optins, &opt_ind)) != -1) {
+    while((c = getopt_long(argc, argv, "r:w:", i2c_options, &opt_ind)) != -1) {
         switch(c) {
             case 0:
                 switch(opt_ind) {
@@ -223,7 +223,20 @@ static int do_i2c(int argc, char *argv[])
 
 static void i2c_cmd_help(int argc, char *argv[])
 {
+    char *cmd;
+    int i;
 
+    if (argc != 2)
+        return;
+
+    cmd = argv[1];
+
+    for (i = 0; i < ARRAY_SIZE(i2c_options); i++) {
+        if (strcmp(cmd, i2c_options[i].name) == 0) {
+            shell_printf("%s - %s\r\n", i2c_options[i].name, help_str[i]);
+            break;
+        }
+    }
 }
 
 shell_command_register(i2c, "i2c utils", do_i2c, i2c_cmd_help);
